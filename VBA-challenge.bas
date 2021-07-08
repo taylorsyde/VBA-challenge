@@ -9,7 +9,7 @@ Sub Tickernames():
 
 
 Dim sumcount As Integer
-Dim opening, closing As Double
+Dim opening, closing, ydiff As Double
 Dim total As Variant
 Dim cur_column, next_column As String
 
@@ -20,12 +20,14 @@ voltotal = 0
 
 opening = Cells(2, 3).Value
 closing = 0
+ydiff = 0
 
 
 'counts the number of rows
 lastrow = Cells(Rows.Count, 1).End(xlUp).Row
     
-'this loop looks a cell and the next cell, if they are different, it prints to the summary table
+'this loop looks at the current cell and the next cell
+'if they are different, it prints to the summary table
     For i = 2 To lastrow
     
     'keeps variable for current and next column
@@ -40,9 +42,22 @@ lastrow = Cells(Rows.Count, 1).End(xlUp).Row
             voltotal = voltotal + Cells(i, 7).Value
             Cells(sumcount, 12).Value = voltotal
             
-            'grab the closing value, calculate difference and print to summary
+            'grab the closing value, calculate difference
+            'and print to summary table
             closing = Cells(i, 6).Value
-            Cells(sumcount, 10).Value = closing - opening
+            ydiff = closing - opening
+            Cells(sumcount, 10).Value = ydiff
+                
+                'formats the colors of the cells
+                If ydiff > 0 Then
+                Cells(sumcount, 10).Interior.ColorIndex = 4
+                
+                Else: Cells(sumcount, 10).Interior.ColorIndex = 3
+                End If
+            
+            'calculate precent, print to summary table and format cell to %
+            Cells(sumcount, 11).Value = ydiff / opening
+            Cells(sumcount, 11).NumberFormat = "0.00%"
             
             'reset the opening
             opening = Cells(i + 1, 3).Value
