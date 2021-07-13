@@ -18,8 +18,13 @@ Sub Summary():
 
     Dim sumcount As Integer
     Dim opening, closing, ydiff As Double
-    Dim total As Variant
+    Dim voltotal As Variant
     Dim cur_column, next_column As String
+    
+    Dim per, maxper, minper As Double
+    Dim maxvol As Variant
+    Dim maxname, minname, maxvolname As String
+    
 
     'sumcount keeps track of the place you are in the summary table
     sumcount = 2
@@ -28,6 +33,11 @@ Sub Summary():
     opening = Cells(2, 3).Value
     closing = 0
     ydiff = 0
+    per = 0
+    
+    maxper = 0
+    minper = 0
+    maxvol = 0
 
 
     'counts the number of rows
@@ -63,8 +73,25 @@ Sub Summary():
                     End If
             
                 'calculate precent, print to summary table and format cell to %
-                Cells(sumcount, 11).Value = ydiff / opening
+                per = ydiff / opening
+                Cells(sumcount, 11).Value = per
                 Cells(sumcount, 11).NumberFormat = "0.00%"
+            
+                'BONUS max yearly change
+                If per > maxper Then
+                maxper = per
+                maxname = cur_column_value
+                End If
+                
+                If per < minper Then
+                minper = per
+                minname = cur_column_value
+                End If
+                
+                If voltotal > maxvol Then
+                maxvol = voltotal
+                maxvolname = cur_column_value
+                End If
             
                 'reset the opening
                 If Cells(i + 1, 3).Value = 0 Then
@@ -82,6 +109,22 @@ Sub Summary():
             End If
                 
         Next i
+        
+        'BONUS
+        Cells(2, 15).Value = "Greatest % Increase"
+        Cells(3, 15).Value = "Greatest % Decrease"
+        Cells(4, 15).Value = "Greatest Total Volume"
+        
+        Cells(1, 16).Value = "Ticker"
+        Cells(2, 16).Value = maxname
+        Cells(3, 16).Value = minname
+        Cells(4, 16).Value = maxvolname
+        
+        Cells(1, 17).Value = "Value"
+        Range("Q2:Q3").NumberFormat = "0.00%"
+        Cells(2, 17).Value = maxper
+        Cells(3, 17).Value = minper
+        Cells(4, 17).Value = maxvol
         
     Next
     Application.ScreenUpdating = True
