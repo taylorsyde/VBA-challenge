@@ -67,7 +67,10 @@ Sub Summary():
                 Cells(sumcount, 11).NumberFormat = "0.00%"
             
                 'reset the opening
-                opening = Cells(i + 1, 3).Value
+                If Cells(i + 1, 3).Value = 0 Then
+                opening = 1
+                Else: opening = Cells(i + 1, 3).Value
+                End If
             
                 'move to the next row in the summary table
                 sumcount = sumcount + 1
